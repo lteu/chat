@@ -13,6 +13,10 @@ $npm install
 
 node app.js
 
+
+To see, how php script communicates with Nodejs via express, lanunch
+$php test.php
+
 - open your browser and play ...
 
 references:

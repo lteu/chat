@@ -18,6 +18,10 @@
          height: 32em;
          overflow: auto;
      }
+     .servernote{
+        padding-top: 5px;
+        padding-bottom: 5px;
+     }
 
      </style>
  </head>
@@ -210,9 +214,11 @@ var currentRoom = 'Room Manarola';
 
       // Receives SERVER FEED
       socket.on('SERVER FEED', function(msg){
-        var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
-        "SERVER </span></div>"+
-        "<div class='well'>"+msg+"</div></li>";
+        // var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
+        // "SERVER </span></div>"+
+        // "<div class='well'>"+msg+"</div></li>";
+        var msghtm = "<li><div class='servernote'><span class='glyphicon glyphicon-bell'></span> <span class='text-muted'>"+
+        "SERVER: "+msg+"</span></div></li>";
         $('.board').append(msghtm);
 
         $(".board").animate({scrollTop:400000},1);

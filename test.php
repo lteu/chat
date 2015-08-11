@@ -1,9 +1,8 @@
 <?php
 
 
-$data = array("name" => "Hagrid", "age" => "36");                                                                    
+$data = array("name" => "Robot", "msg" => "Hello everyone, I'm talking to you via PHP script! ", "room" => "Room Manarola");                                                                    
 $data_string = json_encode($data);
-
 
 // $ch = curl_init();
 
@@ -18,10 +17,10 @@ $data_string = json_encode($data);
 // );     
 
 
-$data = array("name" => "Hagrid", "age" => "36");                                                                    
-$data_string = json_encode($data);                                                                                   
+// $data = array("name" => "Hagrid", "age" => "36");                                                                    
+// $data_string = json_encode($data);                                                                                   
                                                                                                                      
-$ch = curl_init('http://localhost:8080/send/helloFromPhp!');                                                                      
+$ch = curl_init('http://localhost:8080/send/helloFromPhp');                                                                      
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
 curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      

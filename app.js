@@ -1,18 +1,11 @@
-// var app = require('express')();
-// var http = require('http').Server(app);
-
-// app.get('/', function(req, res){
-//   res.send('<h1>Hello world</h1>');
-// });
-
-// http.listen(3000, function(){
-//   console.log('listening on *:3000');
-// });
 
 
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var bodyParser = require('body-parser')
+
+app.use(bodyParser.json());
 
 var count = 1;
 
@@ -20,54 +13,62 @@ app.get('/', function(req, res){
   res.sendfile(__dirname + 'index.html');
 });
 
-// io.on('connection', function(socket){
-//   console.log('a user connected');
-// });
+app.post('/send/:variable/', function(req, res) {
+    var variable = req.params.variable;
+    var content = req.body;
+    // var message = req.body;
+
+    // var msgg = JSON.stringify(req);
+
+    // console.log("Session: %j", req.params);
+     console.log(content.msg);  
+        // console.log('listening on * '+room);
+    // io.to(socket.room).emit('chat message', room);
+    io.sockets.in(content.room).emit("SERVER FEED","External Message From "+content.name + " \" "+content.msg+" \"  "+time());
+
+    // socket.broadcast.to(socket.room).emit("SERVER FEED",socket.username + " has left the "+socket.room+" "+now);
+
+
+    res.end('message sent');
+});
 
 
 io.on('connection', function(socket){
 
-  // socket.broadcast.emit('hi');
-  // socket.broadcast.emit('user connected');
-
-
   console.log('a user connected');
+
   var now = time();
 
-  //default room
+  // default room and name
   socket.room = "Room Manarola";
   socket.username = "anonymous"+count;
-  count++;
   socket.timestr = now;
   socket.join(socket.room);
+  count++;
 
-
-  // current room user list
+  // send user list
   var pile = getUsersInRoom('Room Manarola')
-  io.to('Room Manarola').emit("CONNECTED USERS",pile);
+  io.to(socket.room).emit("CONNECTED USERS",pile);
 
 
   // Disconnect
   socket.on('disconnect', function(){
     console.log('user disconnected');
-    var pile = getUsersInRoom(socket.room)
+    var pile = getUsersInRoom(socket.room);
     io.to(socket.room).emit("CONNECTED USERS",pile);
+    socket.leave(socket.room);
   });
 
 
-  // Chat Message
+  // Handle Chat Message - Demo: channel emit
   socket.on('chat message', function(msg){
-    
-    if (!socket.username) {
-      socket.username = "anonymous"
-    };
-
     var now = time();
     io.sockets.in(socket.room).emit('chat message', { name: socket.username, message: msg, time: now } );
   });
 
-  // Chat Name - one 2 one case
+  // Handle Change username - Demo: server 2 one client
   socket.on('username', function(username){
+
     // store the username in the socket session for this client
     socket.username = username;
 
@@ -79,50 +80,33 @@ io.on('connection', function(socket){
     var pile = getUsersInRoom(socket.room)
     io.to(socket.room).emit("CONNECTED USERS",pile);
 
-    // store the room name in the socket session for this client
-    // socket.room = 'room1';
-    // // add the client's username to the global list
-    // usernames[username] = username;
-    // // send client to room 1
-    // socket.join('room1');
-    // // echo to client they've connected
-    // socket.emit('updatechat', 'SERVER', 'you have connected to room1');
-    // // echo to room 1 that a person has connected to their room
-    // socket.broadcast.to('room1').emit('updatechat', 'SERVER', username + ' has connected to this room');
-    // socket.emit('updaterooms', rooms, 'room1');
   });
 
-  // switch Room
+  // Switch Room
   socket.on('room', function(newroom){
     var now = time();
 
     socket.leave(socket.room);
-    console.log('user rooms switched ... '+socket.room);
     socket.join(newroom);
 
-    // socket.emit('updatechat', 'SERVER', 'you have connected to '+ newroom);
-    
-    // sent message to OLD room
+    // notify leaving for OLD room. Demo: Broadcast
     socket.broadcast.to(socket.room).emit("SERVER FEED",socket.username + " has left the "+socket.room+" "+now);
 
-    // old room user list
+    // update user list of OLD room.
     var pile = getUsersInRoom(socket.room)
     io.to(socket.room).emit("CONNECTED USERS",pile);
     
-    // // update socket session room title
+    // notify coming for NEW room. Demo: Broadcast
     socket.room = newroom;
     socket.broadcast.to(newroom).emit("SERVER FEED",socket.username + " has joined the "+socket.room+" "+now);
 
-    // new room user list
+    // update user list of NEW room.
     var pile = getUsersInRoom(socket.room)
     io.to(socket.room).emit("CONNECTED USERS",pile);
     
-    io.to(socket.id).emit("SERVER FEED"," room switched to "+newroom+" "+now);
+    // notify a successful operation ...
+    // io.to(socket.id).emit("SERVER FEED"," room switched to "+newroom+" "+now);
 
-    // socket.emit('updaterooms', rooms, newroom);
-
-    // socket.room = room;
-    // io.emit("SERVER FEED",socket.username + " joins the "+room);
   });
 
 });
