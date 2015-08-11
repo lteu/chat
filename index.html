@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+        <title>REALTiME CHAT RooMs</title>
+        <!-- BOOTSTRAP CORE STYLE CSS -->
+        <link href="css/bootstrap.css" rel="stylesheet" />
+        <script type="text/javascript" src="js/jquery.js"></script>
+
+        <style>
+        .board{
+           height: 32em;
+           overflow: auto;
+       }
+
+       </style>
+   </head>
+   <body>
+    <div class="navbar-wrapper">
+      <div class="container">
+        <nav class="navbar navbar-default navbar-static-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">Instant Chat</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Room Manarola</a></li>
+            <li><a href="#">Room Amalfi</a></li>
+            <li><a href="#">Room Garda</a></li>
+
+        </ul>
+
+    </div>
+
+</div>
+</nav>
+</div>
+</div>
+
+<div class="container">
+
+
+    <div class="col-md-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+               My Chat Name
+           </div>
+           <div class="panel-body">
+
+              <div class="col-lg-12">
+                <div class="input-group">
+                  <input  id="myName" value="anonymous" type="text" class="form-control">
+                  <span class="input-group-btn">
+                    <button id="confirmName"  class="btn btn-default"  type="button"><span class="glyphicon glyphicon-ok"></span></button>
+                </span>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+       ONLINE USERS
+   </div>
+   <div class="panel-body">
+    <ul class="media-list">
+        <li class="media-body">
+            <h5> <span class="glyphicon glyphicon-user"> </span> Alex Deo </h5>
+            <small class="text-muted">Active From 3 hours</small>
+        </li>
+    </ul>
+    <hr />
+</div>
+</div>
+
+</div>
+
+<div class="col-md-8">
+    <div class="panel panel-info">
+
+        <div class="panel-heading">
+            INSTANT MESSAGE BOARD
+        </div>
+        <div class="panel-body board-wrapper">
+            <ul class="media-list board">
+
+                <li class="maxtes">
+                    <div>
+                        <span class="glyphicon glyphicon-user"> </span>
+                        <span class="text-muted">Admin | Announcement</span>
+                    </div>
+                    <div class="well" >
+                        Welcome to the istant message chat room, this web app is implemented by Node.js, Socket.io, Express, Bootstrap, jQuery and PHP.
+                    </div>
+                </li>
+
+
+
+            </ul>
+        </div>
+
+
+        <div class="panel-footer">
+            <form class="input-group">
+                <input id="m" type="text" class="form-control" placeholder="Enter Message" />
+                <span class="input-group-btn">
+                    <input type="submit" class="btn btn-info send" type="button">SEND</input>
+                </span>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+</div>
+
+
+<script type="text/javascript"  src="js/script.js"></script>
+<script src="node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>
+
+<script>
+
+var socket = io.connect( 'http://localhost:8080' );
+
+      // socket.emit('chat message', 'new user connected ... ');
+
+      //send message
+      $('form').submit(function(){
+
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+
+    // Ajax call for saving datas
+    // $.ajax({
+    //     url: "./ajax/insertNewMessage.php",
+    //     type: "POST",
+    //     data: { name: nameVal, message: msg },
+    //     success: function(data) {
+
+    //     }
+    // });
+      return false;
+  });
+
+      // send change name
+      $('#confirmName').click(function(){
+        var name = $("#myName").val();
+        socket.emit('username', name);
+
+    })
+
+      //send change room
+      $(".nav li").click(function(){
+
+          $(".nav li").removeClass("active");
+          $(this).addClass("active");
+          var roomName = $(this).find("a").text();
+          socket.emit('room', roomName);
+
+     })
+
+      //Receives Chat Message
+      socket.on('chat message', function(msg){
+        var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
+        ""+msg.name+" | 23rd June at 5:00pm</span></div>"+
+        "<div class='well'>"+msg.message+"</div></li>";
+        $('.board').append(msghtm);
+
+        $(".board").animate({scrollTop:400000},1);
+
+        // var board = $('.board');
+        // board.scrollTop = board.scrollHeight;
+    });
+
+      //Receives SERVER FEED
+      socket.on('SERVER FEED', function(msg){
+        var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
+        "SERVER | 23rd June at 5:00pm</span></div>"+
+        "<div class='well'>"+msg+"</div></li>";
+        $('.board').append(msghtm);
+
+        $(".board").animate({scrollTop:400000},1);
+
+        // var board = $('.board');
+        // board.scrollTop = board.scrollHeight;
+    });
+
+
+
+
+
+// socket.on( 'message', function( data ) {
+//     var actualContent = $( "#messages" ).html();
+//     var newMsgContent = '<li> <strong>' + data.name + '</strong> : ' + data.message + '</li>';
+//     var content = newMsgContent + actualContent;
+
+//     $( "#messages" ).html( content );
+// });
+</script>
+
+</body>
+</html>
