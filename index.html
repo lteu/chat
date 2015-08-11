@@ -15,13 +15,13 @@
 
         <style>
         .board{
-           height: 32em;
-           overflow: auto;
-       }
+         height: 32em;
+         overflow: auto;
+     }
 
-       </style>
-   </head>
-   <body>
+     </style>
+ </head>
+ <body>
     <div class="navbar-wrapper">
       <div class="container">
         <nav class="navbar navbar-default navbar-static-top">
@@ -56,31 +56,31 @@
     <div class="col-md-3">
         <div class="panel panel-primary">
             <div class="panel-heading">
-               My Chat Name
-           </div>
-           <div class="panel-body">
+             My Chat Name
+         </div>
+         <div class="panel-body">
 
-              <div class="col-lg-12">
-                <div class="input-group">
-                  <input  id="myName" value="anonymous" type="text" class="form-control">
-                  <span class="input-group-btn">
-                    <button id="confirmName"  class="btn btn-default"  type="button"><span class="glyphicon glyphicon-ok"></span></button>
-                </span>
-            </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
+          <div class="col-lg-12">
+            <div class="input-group">
+              <input  id="myName" value="anonymous" type="text" class="form-control">
+              <span class="input-group-btn">
+                <button id="confirmName"  class="btn btn-default"  type="button"><span class="glyphicon glyphicon-ok"></span></button>
+            </span>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
 
-    </div>
+</div>
 </div>
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-       ONLINE USERS
-   </div>
-   <div class="panel-body">
-    <ul class="media-list">
-        <li class="media-body">
-            <h5> <span class="glyphicon glyphicon-user"> </span> Alex Deo </h5>
-            <small class="text-muted">Active From 3 hours</small>
+     ONLINE USERS
+ </div>
+ <div class="panel-body">
+    <ul class="media-list connected-list">
+        <li>
+            <span class="glyphicon glyphicon-user"> </span> Alex Deo
+            <small class="text-muted">joined at ...</small>
         </li>
     </ul>
     <hr />
@@ -137,6 +137,9 @@
 
 var socket = io.connect( 'http://localhost:8080' );
 
+var cache = {"Room Manarola":[],"Room Amalfi":[],"Room Garda":[]};
+var currentRoom = 'Room Manarola';
+
       // socket.emit('chat message', 'new user connected ... ');
 
       //send message
@@ -164,54 +167,71 @@ var socket = io.connect( 'http://localhost:8080' );
 
     })
 
-      //send change room
+      // send switch room
       $(".nav li").click(function(){
 
+          // nav bar item
           $(".nav li").removeClass("active");
           $(this).addClass("active");
           var roomName = $(this).find("a").text();
           socket.emit('room', roomName);
 
-     })
+          currentRoom =roomName;
 
-      //Receives Chat Message
+          //display old messages
+          $('.board li').remove();
+          var oldmsg = cache[currentRoom];
+          for (var i = 0; i < oldmsg.length; i++) {
+              var msg = oldmsg[i];
+              var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
+              ""+msg.name+" | "+msg.time+"</span></div>"+
+              "<div class='well'>"+msg.message+"</div></li>";
+              $('.board').append(msghtm);
+          };
+      })
+
+
+      // Receives Chat Message
       socket.on('chat message', function(msg){
+
+        //display msg
         var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
-        ""+msg.name+" | 23rd June at 5:00pm</span></div>"+
+        ""+msg.name+" | "+msg.time+"</span></div>"+
         "<div class='well'>"+msg.message+"</div></li>";
         $('.board').append(msghtm);
 
+        // keep in windon buttom
         $(".board").animate({scrollTop:400000},1);
 
-        // var board = $('.board');
-        // board.scrollTop = board.scrollHeight;
+        // update cache
+        cache[currentRoom].push(msg);
+
     });
 
-      //Receives SERVER FEED
+      // Receives SERVER FEED
       socket.on('SERVER FEED', function(msg){
         var msghtm = "<li><div><span class='glyphicon glyphicon-user'></span> <span class='text-muted'>"+
-        "SERVER | 23rd June at 5:00pm</span></div>"+
+        "SERVER </span></div>"+
         "<div class='well'>"+msg+"</div></li>";
         $('.board').append(msghtm);
 
         $(".board").animate({scrollTop:400000},1);
+    });
 
-        // var board = $('.board');
-        // board.scrollTop = board.scrollHeight;
+      // Receives User list
+      socket.on('CONNECTED USERS', function(arr){
+        $(".connected-list li").remove();
+        for (var i = 0; i < arr.length ; i++) {
+            var user = arr[i];
+            var name = user['name'];
+            var time = user['time'];
+            var tmp = "<li> <span class='glyphicon glyphicon-user'> </span> "+name+" <small class='text-muted'>joined at "+time+"</small> </li>";
+            $(".connected-list").append(tmp);
+        };
+
     });
 
 
-
-
-
-// socket.on( 'message', function( data ) {
-//     var actualContent = $( "#messages" ).html();
-//     var newMsgContent = '<li> <strong>' + data.name + '</strong> : ' + data.message + '</li>';
-//     var content = newMsgContent + actualContent;
-
-//     $( "#messages" ).html( content );
-// });
-</script>
-
-</body>
-</html>
+      </script>
+  </body>
+  </html>
