@@ -28,7 +28,6 @@ app.post('/send/:variable/', function(req, res) {
 
     // socket.broadcast.to(socket.room).emit("SERVER FEED",socket.username + " has left the "+socket.room+" "+now);
 
-
     res.end('message sent');
 });
 

@@ -11,13 +11,19 @@ $npm install
 
 - launch app
 
-node app.js
+$node app.js
 
 
-To see, how php script communicates with Nodejs via express, lanunch
+- php nodejs 
+
 $php test.php
 
-- open your browser and play ...
+- open your browser and go: localhost/chat/ without putting #port
+
 
 references:
-...
+
+- Tutorial socket.io. https://github.com/rauchg/chat-example
+- Demo, room, one2one, channel broadcast. https://github.com/mmukhin/psitsmike_example_2
+- nodejs integrated with PHP, mysql. https://github.com/jdutheil/nodePHP
+- css template, http://themeandphoto.com/bootstrap-chat-example-template/
