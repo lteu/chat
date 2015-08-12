@@ -13,20 +13,12 @@ app.get('/', function(req, res){
   res.sendfile(__dirname + 'index.html');
 });
 
+// interaction with external php call
 app.post('/send/:variable/', function(req, res) {
     var variable = req.params.variable;
     var content = req.body;
-    // var message = req.body;
 
-    // var msgg = JSON.stringify(req);
-
-    // console.log("Session: %j", req.params);
-     console.log(content.msg);  
-        // console.log('listening on * '+room);
-    // io.to(socket.room).emit('chat message', room);
     io.sockets.in(content.room).emit("SERVER FEED","External Message From "+content.name + " \" "+content.msg+" \"  "+time());
-
-    // socket.broadcast.to(socket.room).emit("SERVER FEED",socket.username + " has left the "+socket.room+" "+now);
 
     res.end('message sent');
 });
@@ -114,7 +106,6 @@ io.on('connection', function(socket){
 http.listen(8080, function(){
   var addr = http.address();
   console.log('app listening on localhost or http://' + addr.address + ':' + addr.port);
-  // console.log('listening on *:8080');
 });
 
 
@@ -124,7 +115,6 @@ function getUsersInRoom(room){
   var pile = [];
   for (var clientId in clients) {
     var clientSocket = io.sockets.connected[clientId];
-    // console.log('connected in rooms '+socket.room+" "+clientSocket.username+" "+now);
     var clientename = clientSocket.username;
     var clientetime = clientSocket.timestr;
     var tmpuer = {name:clientename, time:clientetime};

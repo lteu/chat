@@ -3,7 +3,7 @@
 This chat room aimes to demonstrate the basic functions of 
 Node.js, Socket.io and its integration with php.
 
-In particular, it solves the homeworks assigned by the [socket.io tutorial](http://socket.io/get-started/chat/)
+In particular, it solves parts of the homeworks assigned by the [socket.io tutorial](http://socket.io/get-started/chat/)
 
 - Broadcast a message to connected users when someone connects or disconnects, ok
 - Add support for nicknames, ok
@@ -41,6 +41,6 @@ References:
 - nodejs integrated with PHP, mysql. [https://github.com/jdutheil/nodePHP](https://github.com/jdutheil/nodePHP)
 - css template, [http://themeandphoto.com/bootstrap-chat-example-template/](http://themeandphoto.com/bootstrap-chat-example-template/)
 
-Example execution:
+Execution Example:
 
 ![Demo](https://github.com/lteu/chat/blob/master/demo.png)
