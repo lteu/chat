@@ -7,10 +7,14 @@ In particular, it solves parts of the homeworks assigned by the [socket.io tutor
 
 - Broadcast a message to connected users when someone connects or disconnects, ok
 - Add support for nicknames, ok
-- Don’t send the same message to the user that sent it himself. Instead, append the message directly as soon as he presses enter. needed
-- Add “{user} is typing” functionality. needed
+- Don’t send the same message to the user that sent it himself. Instead, append the message directly as soon as he presses enter. missing
+- Add “{user} is typing” functionality. missing
 - Show who’s online. ok
-- Add private messaging. needed
+- Add private messaging. missing
+
+more features:
+- get list of clients in a specific room
+
 
 Besides, we'll see also how to send message from outside world (how php sends json/message to nodejs and nodejs distributes it to online users) without using Redis. 
 On the socket.io website, they propose to use socket.io-redis and socket.io-emitter, however this is no documentation and demo available.

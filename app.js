@@ -18,7 +18,7 @@ app.post('/send/:variable/', function(req, res) {
     var variable = req.params.variable;
     var content = req.body;
 
-    io.sockets.in(content.room).emit("SERVER FEED","External Message From "+content.name + " \" "+content.msg+" \"  "+time());
+    io.sockets.in(content.room).emit("SERVER FEED","Message From "+content.name + " \""+content.msg+"\"  "+time());
 
     res.end('message sent');
 });
